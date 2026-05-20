@@ -53,9 +53,17 @@ with st.sidebar:
     st.markdown("**Controls**")
     st.markdown("- `Q` / `ESC` — quit  \n- `R` — reset SOP")
     st.divider()
-    st.markdown("**SOP Steps**")
-    for i, s in enumerate(["reach", "pick", "inspect", "place", "verify"], 1):
-        st.markdown(f"{i}. {s.capitalize()}")
+    st.markdown("**Gesture Guide**")
+    gesture_guide = {
+        "reach":   ("🖐️ Open hand",        "Spread all 4+ fingers wide and move hand toward the object"),
+        "pick":    ("🤌 Pinch",             "Touch thumb tip to index tip, curl remaining fingers"),
+        "inspect": ("✌️ Peace sign",        "Extend only index + middle finger, hold still"),
+        "place":   ("✊ Fist + move",       "Curl all fingers into a fist and move hand downward"),
+        "verify":  ("☝️ Index point",       "Extend index finger only (gun shape), rest curled"),
+    }
+    for i, (step, (icon, desc)) in enumerate(gesture_guide.items(), 1):
+        st.markdown(f"**{i}. {step.capitalize()}** {icon}")
+        st.caption(desc)
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 col_feed, col_status = st.columns([2, 1])
@@ -65,10 +73,19 @@ with col_feed:
     stop_btn = st.button("■  Stop", use_container_width=True)
     frame_placeholder = st.empty()
 
+GESTURE_HINT = {
+    "reach":   "🖐️ Open hand — spread all fingers and move toward object",
+    "pick":    "🤌 Pinch — touch thumb tip to index tip, curl others",
+    "inspect": "✌️ Peace sign — extend index + middle only, hold still",
+    "place":   "✊ Fist + move — curl all fingers and move hand down",
+    "verify":  "☝️ Point — extend index finger only (gun shape)",
+}
+
 with col_status:
     st.subheader("Live Status")
     action_ph = st.empty()
     conf_ph = st.empty()
+    next_step_ph = st.empty()
     steps_ph = st.empty()
     report_ph = st.empty()
 
@@ -117,6 +134,13 @@ if st.session_state.running:
             sop = info["sop"]
             action_ph.metric("Action", info["action"].upper())
             conf_ph.metric("Confidence", f"{info['confidence']:.0%}")
+
+            next_step = sop.get("next_expected")
+            if next_step and not sop.get("procedure_done"):
+                hint = GESTURE_HINT.get(next_step, "")
+                next_step_ph.info(f"**Next:** {next_step.upper()}\n\n{hint}")
+            else:
+                next_step_ph.empty()
 
             step_lines = []
             for i, s in enumerate(["reach", "pick", "inspect", "place", "verify"]):

@@ -32,7 +32,7 @@ class SOPValidator:
     This prevents noise from mis-triggering step completions.
     """
 
-    def __init__(self, config_path: str, min_dwell_frames: int = 12):
+    def __init__(self, config_path: str, min_dwell_frames: int = 8):
         cfg = yaml.safe_load(Path(config_path).read_text())
         self.procedure_name: str = cfg["procedure_name"]
         self.expected_sequence: list[str] = cfg["expected_sequence"]
@@ -53,7 +53,7 @@ class SOPValidator:
         """
         Feed current predicted action. Returns current state dict for UI.
         """
-        if confidence < 0.5 or action == "idle":
+        if confidence < 0.45 or action == "idle":
             self._dwell_action = None
             self._dwell_count = 0
             return self._state()

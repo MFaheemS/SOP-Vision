@@ -28,7 +28,7 @@ class SOPVisionPipeline:
 
         detection = self.detector.detect(frame)
         feature_vec = self.detector.get_feature_vector(detection["landmarks"])
-        action, confidence = self.classifier.update(feature_vec)
+        action, confidence, debug = self.classifier.update(feature_vec)
         sop_state = self.validator.update(action, confidence)
         annotated = self.annotator.annotate(frame, detection, action, confidence, sop_state)
 
@@ -38,6 +38,7 @@ class SOPVisionPipeline:
             "sop": sop_state,
             "hand_detected": detection["hand_detected"],
             "frame_count": self.frame_count,
+            "debug": debug,
         }
 
     def run_on_video(self, source: int | str = 0, output_path: str | None = None,
