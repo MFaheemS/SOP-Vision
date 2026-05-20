@@ -1,8 +1,13 @@
 import numpy as np
-import torch
-import torch.nn as nn
 from collections import deque
 from pathlib import Path
+
+try:
+    import torch
+    import torch.nn as nn
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
 
 
 ACTION_LABELS = ["idle", "reach", "pick", "inspect", "place", "verify"]
@@ -11,28 +16,28 @@ FEATURE_DIM = 63   # 21 landmarks × 3 coords
 WINDOW_SIZE = 20   # frames per prediction
 
 
-class ActionLSTM(nn.Module):
-    """Bidirectional LSTM that classifies hand actions from landmark sequences."""
+if TORCH_AVAILABLE:
+    class ActionLSTM(nn.Module):
+        """Bidirectional LSTM that classifies hand actions from landmark sequences."""
 
-    def __init__(self, input_dim: int = FEATURE_DIM, hidden_dim: int = 128,
-                 num_layers: int = 2, num_classes: int = NUM_CLASSES, dropout: float = 0.3):
-        super().__init__()
-        self.lstm = nn.LSTM(
-            input_dim, hidden_dim, num_layers=num_layers,
-            batch_first=True, bidirectional=True, dropout=dropout
-        )
-        self.classifier = nn.Sequential(
-            nn.Linear(hidden_dim * 2, 64),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(64, num_classes),
-        )
+        def __init__(self, input_dim: int = FEATURE_DIM, hidden_dim: int = 128,
+                     num_layers: int = 2, num_classes: int = NUM_CLASSES, dropout: float = 0.3):
+            super().__init__()
+            self.lstm = nn.LSTM(
+                input_dim, hidden_dim, num_layers=num_layers,
+                batch_first=True, bidirectional=True, dropout=dropout
+            )
+            self.classifier = nn.Sequential(
+                nn.Linear(hidden_dim * 2, 64),
+                nn.ReLU(),
+                nn.Dropout(dropout),
+                nn.Linear(64, num_classes),
+            )
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x: (batch, seq_len, input_dim)
-        out, _ = self.lstm(x)
-        out = self.classifier(out[:, -1, :])
-        return out
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            out, _ = self.lstm(x)
+            out = self.classifier(out[:, -1, :])
+            return out
 
 
 def _finger_states(lm: np.ndarray) -> list[bool]:
@@ -141,7 +146,7 @@ class ActionClassifier:
         # (label, confidence) pairs for weighted smoothing
         self.smoothing_window: deque = deque(maxlen=9)
 
-        if model_path and Path(model_path).exists():
+        if model_path and Path(model_path).exists() and TORCH_AVAILABLE:
             self.model = ActionLSTM().to(device)
             self.model.load_state_dict(torch.load(model_path, map_location=device))
             self.model.eval()
