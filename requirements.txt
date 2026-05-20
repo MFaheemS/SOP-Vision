@@ -1,7 +1,7 @@
-mediapipe>=0.10.9
-opencv-python-headless>=4.9.0
-numpy>=1.26.0
-torch>=2.2.0
-torchvision>=0.17.0
-streamlit>=1.32.0
-pyyaml>=6.0.1
+mediapipe==0.10.14
+opencv-python-headless==4.10.0.84
+numpy==1.26.4
+torch==2.2.2
+torchvision==0.17.2
+streamlit==1.32.0
+pyyaml==6.0.1
