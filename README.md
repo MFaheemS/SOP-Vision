@@ -1,5 +1,7 @@
 # SOP-Vision
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://sop-vision-ydakrxmrmfysepcy7kk4rx.streamlit.app/)
+
 **Real-Time Egocentric Procedure Compliance Detection**
 
 SOP-Vision analyzes first-person (egocentric) video streams to detect hand actions and verify that assembly or inspection procedures are followed in the correct sequence — flagging missed or out-of-order steps in real time.
