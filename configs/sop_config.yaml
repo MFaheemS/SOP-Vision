@@ -1,0 +1,45 @@
+procedure_name: "Electronic Component Assembly"
+description: "Standard 5-step PCB assembly verification procedure"
+min_step_confidence: 0.65
+window_size: 20
+
+steps:
+  - id: 0
+    name: idle
+    display: "Idle / Waiting"
+  - id: 1
+    name: reach
+    display: "Reach for Component"
+  - id: 2
+    name: pick
+    display: "Pick Up Component"
+  - id: 3
+    name: inspect
+    display: "Inspect Component"
+  - id: 4
+    name: place
+    display: "Place Component"
+  - id: 5
+    name: verify
+    display: "Verify Placement"
+
+expected_sequence:
+  - reach
+  - pick
+  - inspect
+  - place
+  - verify
+
+actions:
+  idle:
+    description: "Hand stationary, open or at rest"
+  reach:
+    description: "Hand moving outward, fingers extended toward target"
+  pick:
+    description: "Hand closing to grasp — fingers curling inward"
+  inspect:
+    description: "Hand holding still with object, slow micro-movements"
+  place:
+    description: "Hand moving to target zone and opening to release"
+  verify:
+    description: "Index finger pointing or tapping, confirming placement"
