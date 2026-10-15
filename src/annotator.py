@@ -1,7 +1,7 @@
-import cv2
-import numpy as np
 from collections import deque
 
+import cv2
+import numpy as np
 
 STATUS_COLORS = {
     "completed": (50, 205, 50),

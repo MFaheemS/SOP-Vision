@@ -6,15 +6,16 @@ Usage:
     python scripts/collect_data.py --action reach --samples 200 --out data/landmarks
 """
 import argparse
+import sys
+from collections import deque
+from pathlib import Path
+
 import cv2
 import numpy as np
-from pathlib import Path
-from collections import deque
 
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
+from src.action_classifier import ACTION_LABELS, WINDOW_SIZE
 from src.hand_detector import HandDetector
-from src.action_classifier import ACTION_LABELS, WINDOW_SIZE, FEATURE_DIM
 
 
 def collect(action: str, num_samples: int, out_dir: str, window_size: int = WINDOW_SIZE):
@@ -42,7 +43,7 @@ def collect(action: str, num_samples: int, out_dir: str, window_size: int = WIND
         if fv is not None:
             buffer.append(fv)
 
-        status = f"[RECORDING]" if recording else "[PAUSED]"
+        status = "[RECORDING]" if recording else "[PAUSED]"
         color = (0, 80, 255) if recording else (120, 120, 120)
         cv2.putText(frame, f"{status}  Action: {action.upper()}", (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
