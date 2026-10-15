@@ -1,10 +1,11 @@
-import numpy as np
 from collections import deque
 from pathlib import Path
 
+import numpy as np
+
 try:
     import torch
-    import torch.nn as nn
+    from torch import nn
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
@@ -175,9 +176,9 @@ class ActionClassifier:
 
         return velocity, spread, finger_curl
 
-    def update(self, feature_vector: np.ndarray | None) -> tuple[str, float]:
+    def update(self, feature_vector: np.ndarray | None) -> tuple[str, float, dict]:
         """
-        Feed one frame's feature vector. Returns (action_label, confidence).
+        Feed one frame's feature vector. Returns (action_label, confidence, debug_info).
         Uses heuristic when buffer not full or model not loaded.
         """
         if feature_vector is None:

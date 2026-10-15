@@ -1,11 +1,10 @@
 import cv2
 import numpy as np
-from pathlib import Path
 
-from src.hand_detector import HandDetector
 from src.action_classifier import ActionClassifier
-from src.sop_validator import SOPValidator
 from src.annotator import FrameAnnotator
+from src.hand_detector import HandDetector
+from src.sop_validator import SOPValidator
 
 
 class SOPVisionPipeline:
@@ -65,7 +64,7 @@ class SOPVisionPipeline:
                 if not ret:
                     break
 
-                annotated, info = self.process_frame(frame)
+                annotated, _ = self.process_frame(frame)
 
                 if writer:
                     writer.write(annotated)

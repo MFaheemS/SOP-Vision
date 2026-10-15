@@ -5,15 +5,16 @@ Usage:
     python -m training.train --data_dir data/landmarks --epochs 50 --lr 1e-3
 """
 import argparse
-import numpy as np
-import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader, random_split
-from sklearn.metrics import classification_report
 from pathlib import Path
 
+import numpy as np
+import torch
+from sklearn.metrics import classification_report
+from torch import nn
+from torch.utils.data import DataLoader, random_split
+
+from src.action_classifier import ACTION_LABELS, ActionLSTM
 from training.dataset import LandmarkDataset
-from src.action_classifier import ActionLSTM, ACTION_LABELS
 
 
 def train(data_dir: str, model_out: str = "models/action_lstm.pt",

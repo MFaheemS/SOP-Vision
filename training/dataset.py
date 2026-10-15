@@ -1,7 +1,9 @@
+from pathlib import Path
+from typing import ClassVar
+
 import numpy as np
 import torch
 from torch.utils.data import Dataset
-from pathlib import Path
 
 
 class LandmarkDataset(Dataset):
@@ -12,7 +14,7 @@ class LandmarkDataset(Dataset):
       labels    : (N,) int64
     """
 
-    LABEL_MAP = {
+    LABEL_MAP: ClassVar[dict[str, int]] = {
         "idle": 0, "reach": 1, "pick": 2,
         "inspect": 3, "place": 4, "verify": 5
     }
